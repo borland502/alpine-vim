@@ -1,4 +1,4 @@
-FROM test/app:latest
+FROM borland502/python3-vim-base:latest
 
 # User config
 ENV UID="1000" \
@@ -9,10 +9,10 @@ ENV UID="1000" \
     UHOME=/home/developer
 
 # Used to configure YouCompleteMe
-ENV GOROOT="/usr/lib/go"
-ENV GOBIN="$GOROOT/bin"
-ENV GOPATH="$UHOME/workspace"
-ENV PATH="$PATH:$GOBIN:$GOPATH/bin"
+#ENV GOROOT="/usr/lib/go"
+#ENV GOBIN="$GOROOT/bin"
+#ENV GOPATH="$UHOME/workspace"
+#ENV PATH="$PATH:$GOBIN:$GOPATH/bin"
 
 # User
 RUN apk --no-cache add sudo \
@@ -45,7 +45,9 @@ RUN apk --no-cache add curl \
     > $UHOME/.vimrc \
     && echo "syntax on " \
     >> $UHOME/.vimrc \
-    && echo "filetype plugin indent on " \
+    && echo "colorscheme monokai " \
+    >> $UHOME/.vimrc \
+    && echo "set termguicolors " \
     >> $UHOME/.vimrc \
 # Cleanup
     && apk del curl
@@ -53,9 +55,9 @@ RUN apk --no-cache add curl \
 # Vim wrapper
 COPY run /usr/local/bin/
 #custom .vimrc stub
-RUN mkdir -p /ext  && echo " " > /ext/.vimrc
+#RUN mkdir -p /ext  && echo " " > /ext/.vimrc
 
-COPY .vimrc $UHOME/my.vimrc
+#COPY .vimrc $UHOME/.vimrc
 
 # Vim plugins deps
 RUN apk --update add \
@@ -66,23 +68,23 @@ RUN apk --update add \
     ncurses-terminfo \
     python3 \
 # YouCompleteMe
-    && apk add --virtual build-deps \
-    build-base \
-    cmake \
-    go \
-    llvm \
-    perl \
-    python3-dev \
-    && git clone --depth 1  https://github.com/Valloric/YouCompleteMe \
-    $UHOME/bundle/YouCompleteMe/ \
-    && cd $UHOME/bundle/YouCompleteMe \
-    && git submodule update --init --recursive \
-    && python3 $UHOME/bundle/YouCompleteMe/install.py \
+   && apk add --virtual build-deps \
+#    build-base \
+#    cmake \
+#    go \
+#    llvm \
+#    perl \
+#    python3-dev \
+#    && git clone --depth 1  https://github.com/Valloric/YouCompleteMe \
+#    $UHOME/bundle/YouCompleteMe/ \
+#    && cd $UHOME/bundle/YouCompleteMe \
+#    && git submodule update --init --recursive \
+#    && python3 $UHOME/bundle/YouCompleteMe/install.py \
 # Install and compile procvim.vim
-    && git clone --depth 1 https://github.com/Shougo/vimproc.vim \
-    $UHOME/bundle/vimproc.vim \
-    && cd $UHOME/bundle/vimproc.vim \
-    && make \
+#    && git clone --depth 1 https://github.com/Shougo/vimproc.vim \
+#    $UHOME/bundle/vimproc.vim \
+#    && cd $UHOME/bundle/vimproc.vim \
+#    && make \
     && chown $UID:$GID -R $UHOME \
 # Cleanup
     && apk del build-deps \
@@ -102,25 +104,25 @@ RUN apk --update add \
 USER $UNAME
 
 # Plugins
-#RUN cd $UHOME/bundle/ \
-#    && git clone --depth 1 https://github.com/pangloss/vim-javascript \
+RUN cd $UHOME/bundle/ \
+    && git clone --depth 1 https://github.com/pangloss/vim-javascript \
 
 # Theme
-#    && git clone --depth 1 \
-#    https://github.com/altercation/vim-colors-solarized
+    && git clone --depth 1 \
+    https://github.com/crusoexia/vim-monokai
 
 # Build default .vimrc
-RUN  mv -f $UHOME/.vimrc $UHOME/.vimrc~ \
-     && curl -s \
-     https://raw.githubusercontent.com/amix/vimrc/master/vimrcs/basic.vim \
-     >> $UHOME/.vimrc~ \
-     && curl -s \
-     https://raw.githubusercontent.com/amix/vimrc/master/vimrcs/extended.vim \
-     >> $UHOME/.vimrc~ \
-     && cat  $UHOME/my.vimrc \
-     >> $UHOME/.vimrc~ \
-     && rm $UHOME/my.vimrc \
-     && sed -i '/colorscheme peaksea/d' $UHOME/.vimrc~
+#RUN  mv -f $UHOME/.vimrc $UHOME/.vimrc~ \
+#     && curl -s \
+#     https://raw.githubusercontent.com/amix/vimrc/master/vimrcs/basic.vim \
+#     >> $UHOME/.vimrc~ \
+#     && curl -s \
+#     https://raw.githubusercontent.com/amix/vimrc/master/vimrcs/extended.vim \
+#     >> $UHOME/.vimrc~ \
+#     && cat  $UHOME/my.vimrc \
+#     >> $UHOME/.vimrc~ \
+#     && rm $UHOME/my.vimrc \
+#     && sed -i '/colorscheme peaksea/d' $UHOME/.vimrc~
 
 # Pathogen help tags generation
 RUN vim -E -c 'execute pathogen#helptags()' -c q ; return 0

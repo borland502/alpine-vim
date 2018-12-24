@@ -2,7 +2,7 @@
 # by tuanhtrng
 FROM alpine:latest as builder
 
-MAINTAINER borland502 <jack.ryan.cia.gov@gmail.com>
+MAINTAINER borland502 <jhettenh@gmail.com>
 
 WORKDIR /tmp
 
