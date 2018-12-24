@@ -1,4 +1,4 @@
-FROM jare/alpine-vim:latest
+FROM test/app:latest
 
 # User config
 ENV UID="1000" \
@@ -64,7 +64,7 @@ RUN apk --update add \
     curl \
     git \
     ncurses-terminfo \
-    python \
+    python3 \
 # YouCompleteMe
     && apk add --virtual build-deps \
     build-base \
@@ -72,13 +72,13 @@ RUN apk --update add \
     go \
     llvm \
     perl \
-    python-dev \
+    python3-dev \
     && git clone --depth 1  https://github.com/Valloric/YouCompleteMe \
     $UHOME/bundle/YouCompleteMe/ \
     && cd $UHOME/bundle/YouCompleteMe \
     && git submodule update --init --recursive \
-    && $UHOME/bundle/YouCompleteMe/install.py --gocode-completer \
-# Install and compile procvim.vim                        
+    && python3 $UHOME/bundle/YouCompleteMe/install.py \
+# Install and compile procvim.vim
     && git clone --depth 1 https://github.com/Shougo/vimproc.vim \
     $UHOME/bundle/vimproc.vim \
     && cd $UHOME/bundle/vimproc.vim \
@@ -102,49 +102,13 @@ RUN apk --update add \
 USER $UNAME
 
 # Plugins
-RUN cd $UHOME/bundle/ \
-    && git clone --depth 1 https://github.com/pangloss/vim-javascript \
-    && git clone --depth 1 https://github.com/scrooloose/nerdcommenter \
-    && git clone --depth 1 https://github.com/godlygeek/tabular \
-    && git clone --depth 1 https://github.com/Raimondi/delimitMate \
-    && git clone --depth 1 https://github.com/nathanaelkane/vim-indent-guides \
-    && git clone --depth 1 https://github.com/groenewege/vim-less \
-    && git clone --depth 1 https://github.com/othree/html5.vim \
-    && git clone --depth 1 https://github.com/elzr/vim-json \
-    && git clone --depth 1 https://github.com/bling/vim-airline \
-    && git clone --depth 1 https://github.com/easymotion/vim-easymotion \
-    && git clone --depth 1 https://github.com/mbbill/undotree \
-    && git clone --depth 1 https://github.com/majutsushi/tagbar \
-    && git clone --depth 1 https://github.com/vim-scripts/EasyGrep \
-    && git clone --depth 1 https://github.com/jlanzarotta/bufexplorer \
-    && git clone --depth 1 https://github.com/kien/ctrlp.vim \
-    && git clone --depth 1 https://github.com/scrooloose/nerdtree \
-    && git clone --depth 1 https://github.com/jistr/vim-nerdtree-tabs \
-    && git clone --depth 1 https://github.com/scrooloose/syntastic \
-    && git clone --depth 1 https://github.com/tomtom/tlib_vim \
-    && git clone --depth 1 https://github.com/marcweber/vim-addon-mw-utils \
-    && git clone --depth 1 https://github.com/vim-scripts/taglist.vim \
-    && git clone --depth 1 https://github.com/terryma/vim-expand-region \
-    && git clone --depth 1 https://github.com/tpope/vim-fugitive \
-    && git clone --depth 1 https://github.com/airblade/vim-gitgutter \
-    && git clone --depth 1 https://github.com/fatih/vim-go \
-    && git clone --depth 1 https://github.com/plasticboy/vim-markdown \
-    && git clone --depth 1 https://github.com/michaeljsmith/vim-indent-object \
-    && git clone --depth 1 https://github.com/terryma/vim-multiple-cursors \
-    && git clone --depth 1 https://github.com/tpope/vim-repeat \
-    && git clone --depth 1 https://github.com/tpope/vim-surround \
-    && git clone --depth 1 https://github.com/vim-scripts/mru.vim \
-    && git clone --depth 1 https://github.com/vim-scripts/YankRing.vim \
-    && git clone --depth 1 https://github.com/tpope/vim-haml \
-    && git clone --depth 1 https://github.com/SirVer/ultisnips \
-    && git clone --depth 1 https://github.com/honza/vim-snippets \
-    && git clone --depth 1 https://github.com/derekwyatt/vim-scala \
-    && git clone --depth 1 https://github.com/christoomey/vim-tmux-navigator \
-    && git clone --depth 1 https://github.com/ekalinin/Dockerfile.vim \
+#RUN cd $UHOME/bundle/ \
+#    && git clone --depth 1 https://github.com/pangloss/vim-javascript \
+
 # Theme
-    && git clone --depth 1 \
-    https://github.com/altercation/vim-colors-solarized
-    
+#    && git clone --depth 1 \
+#    https://github.com/altercation/vim-colors-solarized
+
 # Build default .vimrc
 RUN  mv -f $UHOME/.vimrc $UHOME/.vimrc~ \
      && curl -s \

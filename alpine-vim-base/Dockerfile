@@ -2,7 +2,7 @@
 # by tuanhtrng
 FROM alpine:latest as builder
 
-MAINTAINER JAremko <w3techplaygound@gmail.com>
+MAINTAINER borland502 <jack.ryan.cia.gov@gmail.com>
 
 WORKDIR /tmp
 
@@ -16,8 +16,8 @@ RUN apk add --no-cache \
     libxt-dev \
     make \
     ncurses-dev \
-    python \
-    python-dev
+    python3 \
+    python3-dev
 
 # Build vim from git source
 RUN git clone https://github.com/vim/vim \
@@ -26,17 +26,17 @@ RUN git clone https://github.com/vim/vim \
     --disable-gui \
     --disable-netbeans \
     --enable-multibyte \
-    --enable-pythoninterp \
-    --with-features=big \
-    --with-python-config-dir=/usr/lib/python2.7/config \
+    --enable-python3interp=yes \
+    --enable-cscope \
+    --with-features=huge \
  && make install
- 
+
  FROM alpine:latest
- 
+
  COPY --from=builder /usr/local/bin/ /usr/local/bin
  COPY --from=builder /usr/local/share/vim/ /usr/local/share/vim/
  # NOTE: man page is ignored
- 
+
  RUN apk add --no-cache \
     diffutils \
     libice \
